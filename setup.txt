@@ -1,0 +1,78 @@
+##################
+connect to the internet 
+
+
+nmcli device wifi connect "ZTE_06BA14" password "8X2E65VZL6" ifname wlan0
+
+
+######################
+greeter setup
+
+sudo vim /etc/lightdm/lightdm.conf
+update 
+user-session=hyprland
+
+
+#############
+hyprland.conf
+
+delete the line that shows error
+
+
+#############
+install yay
+sudo pacman -S --needed git base-devel
+git clone https://aur.archlinux.org/yay.git
+cd yay
+makepkg -si --noconfirm -i
+
+
+rm -rf yay
+#############
+configure vim clipboard and numbers
+sudo pacman -S gvim
+
+set number 
+set relativenumber 
+set clipboard=unnamedplus
+
+
+
+##################
+waybar
+update hyperland.conf
+
+
+
+################
+yay -S google-chrome
+
+
+
+
+###############
+audio setup only if you forgot to do it from arch install
+
+sudo pacman -S pipewire pipewire-pulse pipewire-alsa pipewire-jack
+sudo pacman -S pipewire-pulse
+systemctl --user enable --now pipewire-pulse
+sudo pacman -S pavucontrol
+
+
+#############
+set up bluetooth 
+
+
+sudo pacman -S --needed bluez bluez-utils blueman
+sudo systemctl enable --now bluetooth
+
+##############
+set up brightness f keys
+
+
+sudo pacman -S brightnessctl
+
+
+
+
+
