@@ -72,7 +72,26 @@ set up brightness f keys
 
 sudo pacman -S brightnessctl
 
+###############
 
+sudo pacman -S hyprpaper
+
+mkdir -p ~/scripts && cp ~/setup/wallpaper-cycler.sh ~/scripts/
+vim ~/.config/hypr/hyprpaper.conf add to exec-once
+
+exec-once = ~/scripts/wallpaper-cycler.sh &
+
+
+
+set up wallpaper changing script ./wallpaper-cycler.sh 
+
+##################
+set up for screen sharing discord
+
+
+
+sudo pacman -S xdg-desktop-portal xdg-desktop-portal-wlr
+systemctl --user restart xdg-desktop-portal xdg-desktop-portal-wlr
 
 
 
