@@ -1,3 +1,14 @@
+#################
+grub fast boot
+
+
+sudo vim /boot/loader/loader.conf
+timeout 0
+
+
+
+
+
 ##################
 connect to the internet 
 
