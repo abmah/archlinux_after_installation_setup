@@ -105,4 +105,21 @@ sudo pacman -S xdg-desktop-portal xdg-desktop-portal-wlr
 systemctl --user restart xdg-desktop-portal xdg-desktop-portal-wlr
 
 
+#####################
+greeter background setup
+
+
+#######################
+kitty setup
+
+copy kitty.conf file from this directory to
+~/.config/kitty/
+
+
+###############
+
+
+
+
+
 

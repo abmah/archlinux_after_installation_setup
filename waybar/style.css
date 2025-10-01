@@ -1,0 +1,165 @@
+/*
+ * Frutiger Aero Style for Waybar (with Green Accents)
+ */
+
+* {
+    /* 
+     * IMPORTANT: Place your icon font first. 
+     * Examples: 'Font Awesome 6 Free', 'FontAwesome', 'Symbols Nerd Font'.
+     */
+    font-family: 'Font Awesome 6 Free', 'Consolas', 'Menlo', 'Monaco', monospace;
+    font-size: 14px;
+    border: none;
+    border-radius: 0;
+}
+
+window#waybar {
+    /* Main background from the original design */
+    background-color: rgb(7, 133, 210);
+    color: white;
+    border-bottom: 2px solid #FFF;
+    transition-property: background-color;
+    transition-duration: .5s;
+}
+
+/* Base style for all modules to create the "window" effect */
+#clock,
+#battery,
+#disk,
+#temperature,
+#backlight,
+#pulseaudio,
+#wireplumber,
+#custom-media,
+#tray,
+#mode,
+#idle_inhibitor,
+#scratchpad,
+#power-profiles-daemon,
+#mpd,
+#language,
+#keyboard-state {
+    /* The primary blue "window" color */
+    background-color: #00A6F0;
+    padding: 4px 12px;
+    margin: 6px 4px;
+    border: 1px solid #FFF;
+    border-radius: 8px;
+}
+
+/* NEW: Green modules for variety */
+#cpu,
+#memory,
+#network {
+    background-color: #2ecc71; /* A vibrant, grassy green */
+    color: #000000; /* Black text for better readability on green */
+    padding: 4px 12px;
+    margin: 6px 4px;
+    border: 1px solid #FFF;
+    border-radius: 8px;
+}
+
+
+/* Subtle hover effect for all modules */
+#clock:hover,
+#battery:hover,
+#cpu:hover,
+#memory:hover,
+#network:hover,
+#disk:hover,
+#temperature:hover,
+#backlight:hover,
+#pulseaudio:hover,
+#wireplumber:hover,
+#custom-media:hover,
+#tray:hover,
+#mode:hover,
+#idle_inhibitor:hover,
+#scratchpad:hover,
+#power-profiles-daemon:hover,
+#mpd:hover {
+    box-shadow: inset 0 -3px rgba(255, 255, 255, 0.4); /* subtle shine effect */
+}
+
+/* Workspaces styling */
+#workspaces {
+    margin: 6px 5px;
+    padding: 0 5px;
+    border: 1px solid #FFF;
+    border-radius: 8px;
+    background-color: #0785D2;
+}
+
+#workspaces button {
+    padding: 2px 8px;
+    margin: 3px 3px;
+    color: #ffffff;
+    background-color: transparent;
+    border-radius: 6px;
+    transition: all 0.3s ease;
+}
+
+#workspaces button:hover {
+    background: rgba(255, 255, 255, 0.2);
+    box-shadow: none;
+}
+
+#workspaces button.focused {
+    background-color: #00A6F0;
+    border: 1px solid #FFF;
+}
+
+#workspaces button.urgent {
+    background-color: #eb4d4b;
+}
+
+/*
+ * =============================================================================
+ * Module-specific styling for states
+ * =============================================================================
+ */
+
+#network.disconnected {
+    background-color: #f53c3c;
+    color: #ffffff;
+}
+
+#battery.charging, #battery.plugged {
+    background-color: #26A65B; /* A darker green for charging */
+    color: #ffffff;
+}
+
+@keyframes blink {
+    to {
+        background-color: #ffffff;
+        color: #000000;
+    }
+}
+
+#battery.critical:not(.charging) {
+    background-color: #f53c3c;
+    color: #ffffff;
+    animation-name: blink;
+    animation-duration: 0.5s;
+    animation-timing-function: steps(12);
+    animation-iteration-count: infinite;
+    animation-direction: alternate;
+}
+
+#pulseaudio {
+    background-color: #f1c40f;
+    color: #000000;
+}
+
+#pulseaudio.muted {
+    background-color: #90b1b1;
+    color: #2a5c45;
+}
+
+#temperature.critical {
+    background-color: #eb4d4b;
+}
+
+#tray {
+    background-color: #0785D2; /* Match the workspace container */
+}
