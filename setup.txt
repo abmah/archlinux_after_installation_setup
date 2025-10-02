@@ -30,6 +30,11 @@ hyprland.conf
 delete the line that shows error
 
 
+add this line to change caps to esc
+input {
+    kb_options = caps:escape
+}
+line already exist just populate it 
 #############
 install yay
 sudo pacman -S --needed git base-devel
@@ -96,6 +101,15 @@ exec-once = ~/scripts/wallpaper-cycler.sh &
 
 set up wallpaper changing script ./wallpaper-cycler.sh 
 
+
+
+
+##################
+## TEMP MAPPING ##
+##################
+bind = $mod, W, exec, pkill waybar && waybar
+
+
 ##################
 set up for screen sharing discord
 
@@ -118,7 +132,15 @@ copy kitty.conf file from this directory to
 
 ###############
 
+waybar setup
+mkdir ~/.config/waybar/
 
+create config.jsonc and style.css
+or copy the files from the directory
+
+
+###############
+set up icon fonts 
 
 
 

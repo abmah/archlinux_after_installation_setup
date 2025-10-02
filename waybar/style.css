@@ -10,14 +10,13 @@
     font-family: 'Font Awesome 6 Free', 'Consolas', 'Menlo', 'Monaco', monospace;
     font-size: 14px;
     border: none;
-    border-radius: 0;
 }
 
 window#waybar {
     /* Main background from the original design */
     background-color: rgb(7, 133, 210);
     color: white;
-    border-bottom: 2px solid #FFF;
+    border: 1px solid #FFF;
     transition-property: background-color;
     transition-duration: .5s;
 }
@@ -44,7 +43,6 @@ window#waybar {
     padding: 4px 12px;
     margin: 6px 4px;
     border: 1px solid #FFF;
-    border-radius: 8px;
 }
 
 /* NEW: Green modules for variety */
@@ -52,11 +50,9 @@ window#waybar {
 #memory,
 #network {
     background-color: #2ecc71; /* A vibrant, grassy green */
-    color: #000000; /* Black text for better readability on green */
     padding: 4px 12px;
     margin: 6px 4px;
     border: 1px solid #FFF;
-    border-radius: 8px;
 }
 
 
@@ -86,7 +82,6 @@ window#waybar {
     margin: 6px 5px;
     padding: 0 5px;
     border: 1px solid #FFF;
-    border-radius: 8px;
     background-color: #0785D2;
 }
 
@@ -95,7 +90,6 @@ window#waybar {
     margin: 3px 3px;
     color: #ffffff;
     background-color: transparent;
-    border-radius: 6px;
     transition: all 0.3s ease;
 }
 
@@ -132,7 +126,6 @@ window#waybar {
 @keyframes blink {
     to {
         background-color: #ffffff;
-        color: #000000;
     }
 }
 
@@ -146,10 +139,6 @@ window#waybar {
     animation-direction: alternate;
 }
 
-#pulseaudio {
-    background-color: #f1c40f;
-    color: #000000;
-}
 
 #pulseaudio.muted {
     background-color: #90b1b1;
