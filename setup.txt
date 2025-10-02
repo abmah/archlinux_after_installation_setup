@@ -52,6 +52,10 @@ set number
 set relativenumber 
 set clipboard=unnamedplus
 
+##################
+download fonts icons etc
+
+   sudo pacman -S ttf-jetbrains-mono-nerd ttf-firacode-nerd
 
 
 ##################
@@ -138,10 +142,15 @@ mkdir ~/.config/waybar/
 create config.jsonc and style.css
 or copy the files from the directory
 
+##############
+add fuzzy search 
+sudo pacman -S fzf
 
 ###############
-set up icon fonts 
+
+wofi
 
 
+copy the ./wofi config and style to .config/wofi/
 
 
