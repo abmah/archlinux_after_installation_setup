@@ -153,4 +153,28 @@ wofi
 
 copy the ./wofi config and style to .config/wofi/
 
+#####################3
 
+screen shot 
+
+
+
+sudo pacman -S grim slurp swappy wl-clipboard
+
+
+mkdir -p ~/Pictures/Screenshots
+
+
+add the binds to hyprland *no need they already exist in the conf
+
+
+#########################
+
+use aichat to enable ai prompting in terminal
+
+sudo pacman -S aichat
+
+enable streaming in its config
+
+
+##############3333

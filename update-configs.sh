@@ -20,5 +20,10 @@ echo "Copying Waybar config..."
 mkdir -p "$BACKUP_DIR/waybar"
 cp -r ~/.config/waybar/* "$BACKUP_DIR/waybar/"
 
+# Copy Wofi config
+echo "Copying Wofi config..."
+mkdir -p "$BACKUP_DIR/wofi"
+cp -r ~/.config/wofi/* "$BACKUP_DIR/wofi/"
+
 echo "All configs copied to $BACKUP_DIR ✅"
 
