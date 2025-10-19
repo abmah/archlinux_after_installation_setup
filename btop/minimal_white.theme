@@ -1,0 +1,47 @@
+# Minimal White Pure Theme for btop
+# All text white, transparent background, only warnings/errors colored
+
+# Main background and foreground
+theme[main_bg]="#000000"
+theme[main_fg]="#ffffff"
+
+# Boxes and borders
+theme[title]="#ffffff"
+theme[hi_fg]="#ffffff"
+theme[border_fg]="#ffffff"
+theme[div_fg]="#ffffff"
+
+# Graph text
+theme[graph_text]="#ffffff"
+
+# Process and menu text
+theme[proc_misc]="#ffffff"
+theme[selected_bg]="#000000"
+theme[selected_fg]="#ffffff"
+theme[cpu_box]="#ffffff"
+theme[mem_box]="#ffffff"
+theme[net_box]="#ffffff"
+theme[proc_box]="#ffffff"
+
+# Graph colors (all white)
+theme[cpu_graph_1]="#ffffff"
+theme[cpu_graph_2]="#ffffff"
+theme[mem_graph_1]="#ffffff"
+theme[mem_graph_2]="#ffffff"
+theme[net_recv]="#ffffff"
+theme[net_send]="#ffffff"
+
+# Important: warning / critical colors only
+theme[warn_fg]="#ffff00"
+theme[crit_fg]="#ff0000"
+
+# Disable gradient-style effects
+theme[graph_1]="#ffffff"
+theme[graph_2]="#ffffff"
+theme[graph_3]="#ffffff"
+theme[graph_4]="#ffffff"
+
+# Clock and misc
+theme[clock_fg]="#ffffff"
+theme[uptime_fg]="#ffffff"
+

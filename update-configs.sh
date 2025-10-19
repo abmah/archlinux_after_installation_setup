@@ -25,5 +25,9 @@ echo "Copying Wofi config..."
 mkdir -p "$BACKUP_DIR/wofi"
 cp -r ~/.config/wofi/* "$BACKUP_DIR/wofi/"
 
-echo "All configs copied to $BACKUP_DIR ✅"
+# Copy btop theme
+echo "Copying btop theme..."
+mkdir -p "$BACKUP_DIR/btop"
+cp ~/.config/btop/themes/minimal_white.theme "$BACKUP_DIR/btop/"
 
+echo "All configs copied to $BACKUP_DIR ✅"

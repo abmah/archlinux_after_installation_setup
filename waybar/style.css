@@ -45,15 +45,17 @@ window#waybar {
     border: 1px solid #FFF;
 }
 
-/* NEW: Green modules for variety */
+/* Green modules for variety */
 #cpu,
 #memory,
-#network {
+#network,
+#custom-nmtui { /* <-- Style added here */
     background-color: #2ecc71; /* A vibrant, grassy green */
     padding: 4px 12px;
     margin: 6px 4px;
     border: 1px solid #FFF;
 }
+
 
 
 /* Subtle hover effect for all modules */
@@ -62,6 +64,7 @@ window#waybar {
 #cpu:hover,
 #memory:hover,
 #network:hover,
+#custom-nmtui:hover, /* <-- Hover effect added here */
 #disk:hover,
 #temperature:hover,
 #backlight:hover,
