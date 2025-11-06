@@ -58,6 +58,17 @@ download fonts icons etc
    sudo pacman -S ttf-jetbrains-mono-nerd ttf-firacode-nerd
 
 
+
+
+
+# enable arabic
+
+sudo pacman -S noto-fonts noto-fonts-extra
+
+
+copy ./language/fonts.conf to ~/.config/fontconfig/fonts.conf
+
+ 
 ##################
 waybar
 update hyperland.conf
