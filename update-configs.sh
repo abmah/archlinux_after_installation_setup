@@ -58,6 +58,13 @@ if [ -d ~/.config/gtk-3.0 ]; then
     cp ~/.config/gtk-3.0/settings.ini "$BACKUP_DIR/gtk-3.0/" 2>/dev/null || true
 fi
 
+# Copy XP desktop (icons on background layer)
+if [ -d ~/.config/xp-desktop ]; then
+    echo "Copying xp-desktop..."
+    mkdir -p "$BACKUP_DIR/xp-desktop"
+    cp ~/.config/xp-desktop/desktop.py "$BACKUP_DIR/xp-desktop/" 2>/dev/null || true
+fi
+
 # Copy XP startup sound if present
 if [ -f ~/.config/sounds/xp-startup.wav ]; then
     echo "Copying XP startup sound..."

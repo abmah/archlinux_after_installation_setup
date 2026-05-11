@@ -56,6 +56,7 @@ git push
 | `update-configs.sh` | Pulls current `~/.config/*` back into the repo            |
 | `hypr/`          | Hyprland, hyprpaper, hyprlock configs + XP login assets      |
 | `waybar/`        | XP-Luna taskbar, sprites, and Python+GTK XP dialogs          |
+| `xp-desktop/`    | Wayland background layer drawing XP-style desktop icons      |
 | `wezterm/`       | Frutiger Aero terminal config + sky background               |
 | `Thunar/`        | XP File Explorer styling                                     |
 | `dunst/`         | XP-balloon notifications                                     |

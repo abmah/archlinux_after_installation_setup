@@ -65,6 +65,7 @@ PKGS_HYPR=(
     xdg-desktop-portal xdg-desktop-portal-hyprland
     polkit-kde-agent
     qt5-wayland qt6-wayland
+    gtk-layer-shell  # required by the XP desktop background layer
 )
 
 # Terminal, file manager, browser-ish things
@@ -245,8 +246,9 @@ step_configs() {
     deploy_config_tree wofi     wofi
     deploy_config_tree dunst    dunst
     deploy_config_tree Thunar   Thunar
-    deploy_config_tree gtk-3.0  gtk-3.0
-    deploy_config_tree kitty    kitty
+    deploy_config_tree gtk-3.0     gtk-3.0
+    deploy_config_tree kitty       kitty
+    deploy_config_tree xp-desktop  xp-desktop
     # btop theme
     run "mkdir -p '$CFG/btop/themes'"
     run "cp -f '$REPO_DIR/btop/minimal_white.theme' '$CFG/btop/themes/'"
@@ -262,6 +264,7 @@ step_configs() {
     fi
     # ensure scripts are executable
     run "find '$CFG/waybar' -maxdepth 2 -type f \\( -name '*.sh' -o -name '*.py' \\) -exec chmod +x {} +"
+    run "chmod +x '$CFG/xp-desktop/desktop.py' 2>/dev/null || true"
 }
 
 step_mimes() {
