@@ -72,37 +72,77 @@ window.xp-desktop { background-color: rgba(0,0,0,0); }
     border: 1px dotted #1A1A1A;
 }
 
-/* ----- Context menu --------------------------------------------------- */
+/* ----- Context menu (authentic Windows XP look) ---------------------- */
+/* Outer chrome: thin gray border, white interior, with a 24px CREAM
+   icon gutter on the left exactly like Explorer's context menu. The
+   gutter is painted via a left-to-right linear gradient on the menu
+   background, then each item is padded so its label clears the gutter. */
 menu.xp-menu {
     background-color: #FFFFFF;
-    border: 1px solid #0A246A;
-    padding: 2px;
+    background-image: linear-gradient(
+        to right,
+        #ECE9D8 0px,
+        #ECE9D8 24px,
+        #D4D0C8 24px,
+        #D4D0C8 25px,
+        #FFFFFF 25px,
+        #FFFFFF 100%);
+    border: 1px solid #6D6D6D;
+    padding: 2px 0;
+    color: #000000;
 }
+
 menu.xp-menu separator {
     background-color: #D4D0C8;
     min-height: 1px;
-    margin: 3px 2px;
+    margin: 3px 2px 3px 28px;   /* don't cross into the icon gutter */
+    padding: 0;
 }
+
 menu.xp-menu menuitem {
     background-color: transparent;
-    padding: 4px 24px 4px 6px;
+    background-image: none;
+    padding: 4px 28px 4px 4px;  /* room for submenu arrow on right */
     color: #000000;
     font-family: "Tahoma";
     font-size: 9pt;
+    border: none;
+    text-shadow: none;
 }
+
+/* HOVER = full XP-blue row, white text. Solid color, not gradient. */
 menu.xp-menu menuitem:hover,
 menu.xp-menu menuitem:selected {
-    background-image: linear-gradient(180deg, #5A9BFF 0%, #1E5BC9 100%);
+    background-color: #316AC5;
+    background-image: none;
     color: #FFFFFF;
 }
+menu.xp-menu menuitem:hover label,
+menu.xp-menu menuitem:selected label {
+    color: #FFFFFF;
+}
+
 menu.xp-menu menuitem:disabled {
     color: #888888;
 }
-menu.xp-menu menuitem label { color: inherit; }
+menu.xp-menu menuitem:disabled label { color: #888888; }
 
-/* Hover/selected label color override in case the system theme fights us */
-menu.xp-menu menuitem:hover label,
-menu.xp-menu menuitem:selected label { color: #FFFFFF; }
+menu.xp-menu menuitem label {
+    color: #000000;
+    background-color: transparent;
+}
+
+/* Submenu indicator (the little right-pointing arrow) */
+menu.xp-menu menuitem arrow {
+    min-width: 8px;
+    min-height: 8px;
+    color: #000000;
+    -gtk-icon-source: -gtk-icontheme("pan-end-symbolic");
+}
+menu.xp-menu menuitem:hover arrow,
+menu.xp-menu menuitem:selected arrow {
+    color: #FFFFFF;
+}
 """
 
 
@@ -269,8 +309,9 @@ class XPMenu(Gtk.Menu):
 
     def add_item(self, label, callback=None, bold=False, enabled=True, icon=None):
         item = Gtk.MenuItem()
-        box = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL, spacing=8)
-        # 16x16 icon slot
+        box = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL, spacing=0)
+
+        # 16x16 icon centred in the 24px cream gutter
         img = Gtk.Image()
         if icon:
             try:
@@ -279,20 +320,37 @@ class XPMenu(Gtk.Menu):
                 img.set_from_pixbuf(pb)
             except Exception:
                 pass
-        img.set_size_request(18, 16)
+        img.set_size_request(20, 16)            # leaves ~4px breathing room
+        img.set_margin_start(2)
+        img.set_margin_end(8)                   # clears the 24px gutter
         box.pack_start(img, False, False, 0)
 
+        # Tahoma label, optionally bold for the default action
         lbl = Gtk.Label()
         weight = "bold" if bold else "normal"
+        # Use Pango markup so colour can't be flipped by the system theme
         lbl.set_markup(
-            f'<span font_desc="Tahoma 9" weight="{weight}">'
+            f'<span font_desc="Tahoma 9" weight="{weight}" foreground="#000000">'
             f'{GLib.markup_escape_text(label)}</span>')
         lbl.set_xalign(0.0)
+        lbl.set_hexpand(True)
         box.pack_start(lbl, True, True, 0)
         item.add(box)
         item.set_sensitive(enabled)
         if callback:
             item.connect("activate", lambda *_: callback())
+
+        # Flip label colour on hover (Pango fixes the foreground, so we have
+        # to re-render the markup when the item enters/leaves state).
+        def _on_state(_w, _flags):
+            on = bool(item.get_state_flags() & (Gtk.StateFlags.PRELIGHT |
+                                                Gtk.StateFlags.SELECTED))
+            fg = "#FFFFFF" if on else ("#888888" if not enabled else "#000000")
+            lbl.set_markup(
+                f'<span font_desc="Tahoma 9" weight="{weight}" foreground="{fg}">'
+                f'{GLib.markup_escape_text(label)}</span>')
+        item.connect("state-flags-changed", _on_state)
+
         self.append(item)
         return item
 
@@ -322,7 +380,12 @@ class XPIcon(Gtk.EventBox):
         self._drag_start = None
         self._dragging = False
         self.set_size_request(ICON_W, ICON_H)
-        self.set_visible_window(False)
+        # CSS background/border on EventBox is only painted when the widget
+        # owns a real GDK window -- visible_window=False disables this and
+        # was hiding the XP selection rectangle entirely.
+        self.set_visible_window(True)
+        # Allow rgba background -> transparent until selected
+        self.set_app_paintable(True)
         self.get_style_context().add_class("xp-icon-cell")
         self.add_events(
             Gdk.EventMask.BUTTON_PRESS_MASK |
