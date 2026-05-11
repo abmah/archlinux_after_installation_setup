@@ -15,19 +15,28 @@ flock -n 9 || { echo "[xp-desktop] already running"; exit 0; }
 
 trap 'kill %% 2>/dev/null; exit 0' INT TERM
 
+# Companion title-bar overlay. Same restart policy as the desktop.
+spawn_titlebar() {
+    python3 -u "$DIR/titlebar.py" >>"$LOG" 2>&1 &
+    TITLEBAR_PID=$!
+}
+
+trap 'kill ${TITLEBAR_PID:-} 2>/dev/null; kill %% 2>/dev/null; exit 0' INT TERM
+
+spawn_titlebar
+
 while :; do
-    # Print start banner so the log is easy to grep
-    {
-        echo "==== $(date '+%F %T') start ===="
-    } >> "$LOG"
+    echo "==== $(date '+%F %T') start desktop ====" >>"$LOG"
     python3 -u "$DIR/desktop.py" >>"$LOG" 2>&1 &
     pid=$!
     wait "$pid"
     rc=$?
-    {
-        echo "==== $(date '+%F %T') exited rc=$rc ===="
-    } >> "$LOG"
-    # If exit was clean (rc=0) and very fast, back off to avoid a tight
-    # respawn loop on a config error.
+    echo "==== $(date '+%F %T') desktop exited rc=$rc ====" >>"$LOG"
+
+    # If the title bar manager has died too, bring it back
+    if ! kill -0 "${TITLEBAR_PID:-0}" 2>/dev/null; then
+        echo "==== $(date '+%F %T') restart titlebar ====" >>"$LOG"
+        spawn_titlebar
+    fi
     sleep 1
 done
