@@ -1,0 +1,51 @@
+#!/usr/bin/env bash
+# Root-side tunables for power-mode.
+mode="${1:-balanced}"
+
+write() { [ -w "$2" ] && echo "$1" > "$2"; return 0; }
+set_cap()      { write "$1" /sys/devices/system/cpu/intel_pstate/max_perf_pct; }
+set_min_cap()  { write "$1" /sys/devices/system/cpu/intel_pstate/min_perf_pct; }
+set_turbo()    { write "$1" /sys/devices/system/cpu/intel_pstate/no_turbo; }
+set_hwp_boost(){ write "$1" /sys/devices/system/cpu/intel_pstate/hwp_dynamic_boost; }
+set_gov()      { for g in /sys/devices/system/cpu/cpu*/cpufreq/scaling_governor; do write "$1" "$g"; done; }
+set_pcie_pol() { for p in /sys/class/pci_bus/*/device/power/control; do write "$1" "$p"; done; }
+set_usb_pol()  { for u in /sys/bus/usb/devices/*/power/control; do write "$1" "$u"; done; }
+set_sata_pol() { for h in /sys/class/scsi_host/host*/link_power_management_policy; do write "$1" "$h"; done; }
+
+case "$mode" in
+    ultra)
+        set_gov         powersave
+        set_cap         25
+        set_min_cap     11
+        set_turbo       1
+        set_hwp_boost   0
+        set_pcie_pol    auto
+        set_usb_pol     auto
+        set_sata_pol    min_power
+        ;;
+    balanced)
+        set_gov         powersave
+        set_cap         85
+        set_min_cap     11
+        set_turbo       0
+        set_hwp_boost   1
+        set_pcie_pol    auto
+        set_usb_pol     auto
+        set_sata_pol    med_power_with_dipm
+        ;;
+    performance)
+        set_gov         performance
+        set_cap         100
+        set_min_cap     11
+        set_turbo       0
+        set_hwp_boost   1
+        set_pcie_pol    on
+        set_usb_pol     on
+        set_sata_pol    max_performance
+        ;;
+    *) echo "usage: $0 <ultra|balanced|performance>" >&2; exit 2 ;;
+esac
+
+echo "$mode" > /tmp/power-mode-current
+chmod 644 /tmp/power-mode-current
+exit 0

@@ -1,0 +1,13 @@
+[Unit]
+Description=Reload thinkpad_acpi with fan_control=1
+After=systemd-modules-load.service
+Before=multi-user.target
+
+[Service]
+Type=oneshot
+ExecStartPre=/usr/bin/sh -c 'lsmod | grep -q ^thinkpad_acpi && /usr/bin/modprobe -r thinkpad_acpi || true'
+ExecStart=/usr/bin/modprobe thinkpad_acpi fan_control=1
+RemainAfterExit=yes
+
+[Install]
+WantedBy=multi-user.target

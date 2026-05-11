@@ -1,0 +1,4 @@
+# NOPASSWD entries for the XP-Luna power & fan helpers used by waybar.
+# Drop into /etc/sudoers.d/xp-helpers (mode 0440, owner root:root) via visudo.
+# %USER% is substituted by install.sh with the deploying user's username.
+%USER% ALL=(root) NOPASSWD: /usr/local/bin/power-mode, /usr/local/bin/fan-mode

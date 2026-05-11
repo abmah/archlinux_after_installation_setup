@@ -1,0 +1,17 @@
+#!/usr/bin/env bash
+# /usr/local/bin/fan-mode — root-side fan level setter for thinkpad_acpi.
+# Args: <auto|quiet|normal|max|off>
+mode="${1:-auto}"
+fan=/proc/acpi/ibm/fan
+[ -w "$fan" ] || { echo "fan_control not enabled" >&2; exit 1; }
+case "$mode" in
+    auto)    echo "level auto"        > "$fan" ;;
+    quiet)   echo "level 1"           > "$fan" ;;
+    normal)  echo "level 4"           > "$fan" ;;
+    max)     echo "level disengaged"  > "$fan" ;;
+    off)     echo "level 0"           > "$fan" ;;
+    *)       echo "usage: $0 <auto|quiet|normal|max|off>" >&2; exit 2 ;;
+esac
+echo "$mode" > /tmp/fan-mode-current
+chmod 644 /tmp/fan-mode-current
+exit 0
