@@ -1,157 +1,253 @@
 /*
- * Frutiger Aero Style for Waybar (with Green Accents)
+ * Waybar - Windows XP Luna taskbar (using ORIGINAL Microsoft sprites).
+ *
+ * Sprites extracted from the actual Luna theme via tdcosta100/WindowsXP:
+ *   xp-sprites/taskbar.png       50x28  - tileable bar background
+ *   xp-sprites/start-button.png  118x36 - composed 9-slice start button
+ *   xp-sprites/tray.png          110x28 - tileable tray/clock pane
  */
 
 * {
-    /* 
-     * IMPORTANT: Place your icon font first. 
-     * Examples: 'Font Awesome 6 Free', 'FontAwesome', 'Symbols Nerd Font'.
-     */
-    font-family: 'Font Awesome 6 Free', 'Consolas', 'Menlo', 'Monaco', monospace;
-    font-size: 14px;
+    font-family: 'Tahoma', 'Verdana', 'Liberation Sans', sans-serif;
+    font-size: 11px;
+    font-weight: bold;
     border: none;
+    min-height: 0;
 }
 
 window#waybar {
-    /* Main background from the original design */
-    background-color: rgb(7, 133, 210);
-    color: white;
-    border: 1px solid #FFF;
-    transition-property: background-color;
-    transition-duration: .5s;
+    background-image: url("file:///home/abd/.config/waybar/xp-sprites/taskbar-strip.png");
+    background-repeat: repeat-x;
+    background-size: 1px 100%;
+    color: #ffffff;
 }
 
-/* Base style for all modules to create the "window" effect */
-#clock,
+/* ── Start button — REAL Luna sprite ─────────────────────────────────── */
+
+#custom-start {
+    background-image: url("file:///home/abd/.config/waybar/xp-sprites/start-button.png");
+    background-repeat: no-repeat;
+    background-size: 100% 100%;
+    background-color: transparent;
+    color: #ffffff;
+    border: none;
+    border-radius: 0;
+    padding: 0 36px 0 28px;
+    margin: 0;
+    font-family: 'Franklin Gothic Medium', 'Trebuchet MS', 'Tahoma', sans-serif;
+    font-style: italic;
+    font-weight: bold;
+    font-size: 14px;
+    text-shadow:
+        1px 2px 2px rgba(69, 76, 16, 0.85),
+        0 0 3px rgba(69, 76, 16, 0.65);
+    box-shadow: none;
+}
+#custom-start:hover {
+    /* Subtle XP-style brightening over the green sprite */
+    background-color: rgba(255, 255, 255, 0.10);
+    box-shadow:
+        inset 0 0  6px rgba(255, 255, 255, 0.35),
+        inset 0 1px 0 rgba(255, 255, 255, 0.45);
+}
+#custom-start:active {
+    background-color: rgba(0, 0, 0, 0.10);
+    box-shadow:
+        inset 1px 1px 0 rgba(0, 0, 0, 0.45),
+        inset -1px -1px 0 rgba(255, 255, 255, 0.25);
+}
+
+/* ── Workspaces (window-buttons section) ────────────────────────────── */
+
+#workspaces {
+    background: transparent;
+    margin: 0;
+    padding: 0 6px 0 4px;
+    border: none;
+}
+#workspaces button {
+    padding: 1px 12px;
+    margin: 4px 1px;
+    color: #ffffff;
+    font-size: 11px;
+    background:
+        linear-gradient(180deg,
+            #5A9BFF 0%,
+            #3A86F0 50%,
+            #1E5BC9 51%,
+            #2E6FD8 100%);
+    border: 1px solid #0A246A;
+    border-radius: 3px;
+    text-shadow: 0 1px 0 rgba(0, 0, 0, 0.5);
+    box-shadow:
+        inset 0 1px 0 rgba(255, 255, 255, 0.40),
+        inset 0 -1px 0 rgba(0, 0, 0, 0.25);
+    transition: background-color 0.1s ease;
+}
+#workspaces button:hover {
+    background:
+        linear-gradient(180deg,
+            #6BA9FF 0%,
+            #4A93F4 50%,
+            #2A6BD2 51%,
+            #387EDF 100%);
+}
+#workspaces button.focused {
+    background:
+        linear-gradient(180deg,
+            #1E5BC9 0%,
+            #2E6FD8 30%,
+            #3A86F0 70%,
+            #5A9BFF 100%);
+    border: 1px solid #0A246A;
+    box-shadow:
+        inset 1px 1px 0 rgba(0, 0, 0, 0.40),
+        inset -1px -1px 0 rgba(255, 255, 255, 0.30);
+}
+#workspaces button.urgent {
+    background: linear-gradient(180deg, #FF8E70 0%, #E73E1A 50%, #B92500 51%, #DD3B16 100%);
+    border-color: #6E0F00;
+}
+
+/* ── Plain text-only modules ─────────────────────────────────────────── */
+
 #battery,
+#cpu,
+#memory,
+#network,
+#custom-nmtui,
+#custom-fan,
+#custom-bluetooth,
 #disk,
 #temperature,
 #backlight,
 #pulseaudio,
 #wireplumber,
 #custom-media,
-#tray,
 #mode,
 #idle_inhibitor,
 #scratchpad,
 #power-profiles-daemon,
 #mpd,
 #language,
-#keyboard-state {
-    /* The primary blue "window" color */
-    background-color: #00A6F0;
-    padding: 4px 12px;
-    margin: 6px 4px;
-    border: 1px solid #FFF;
+#keyboard-state,
+#custom-power {
+    background: transparent;
+    color: #ffffff;
+    padding: 1px 8px;
+    margin: 3px 1px;
+    border: 1px solid transparent;
+    border-radius: 3px;
+    text-shadow: 0 1px 0 rgba(0, 0, 0, 0.55);
+    transition: background-image 90ms linear,
+                border-color    90ms linear,
+                box-shadow      90ms linear;
 }
 
-/* Green modules for variety */
-#cpu,
-#memory,
-#network,
-#custom-nmtui { /* <-- Style added here */
-    background-color: #2ecc71; /* A vibrant, grassy green */
-    padding: 4px 12px;
-    margin: 6px 4px;
-    border: 1px solid #FFF;
-}
-
-
-
-/* Subtle hover effect for all modules */
-#clock:hover,
+/* ── Universal XP hover: glassy blue inset, matches taskbar button hover ── */
 #battery:hover,
 #cpu:hover,
 #memory:hover,
 #network:hover,
-#custom-nmtui:hover, /* <-- Hover effect added here */
+#custom-nmtui:hover,
+#custom-fan:hover,
+#custom-bluetooth:hover,
 #disk:hover,
 #temperature:hover,
 #backlight:hover,
 #pulseaudio:hover,
 #wireplumber:hover,
 #custom-media:hover,
-#tray:hover,
 #mode:hover,
 #idle_inhibitor:hover,
 #scratchpad:hover,
 #power-profiles-daemon:hover,
-#mpd:hover {
-    box-shadow: inset 0 -3px rgba(255, 255, 255, 0.4); /* subtle shine effect */
+#mpd:hover,
+#language:hover,
+#keyboard-state:hover,
+#custom-power:hover {
+    background-image:
+        linear-gradient(180deg,
+            rgba(255, 255, 255, 0.45) 0%,
+            rgba(186, 214, 255, 0.30) 50%,
+            rgba(0,   28,   90,  0.35) 51%,
+            rgba(58,  134, 240, 0.35) 100%);
+    border: 1px solid rgba(10, 36, 106, 0.75);
+    box-shadow:
+        inset 1px 1px 0 rgba(255, 255, 255, 0.55),
+        inset -1px -1px 0 rgba(0, 0, 0, 0.30),
+        0 0 4px rgba(132, 184, 255, 0.45);
 }
 
-/* Workspaces styling */
-#workspaces {
-    margin: 6px 5px;
-    padding: 0 5px;
-    border: 1px solid #FFF;
-    background-color: #0785D2;
+/* Pressed state — XP buttons go inset/darker on click */
+#battery:active,
+#cpu:active,
+#memory:active,
+#network:active,
+#custom-nmtui:active,
+#custom-fan:active,
+#custom-bluetooth:active,
+#temperature:active,
+#backlight:active,
+#pulseaudio:active,
+#idle_inhibitor:active,
+#power-profiles-daemon:active,
+#custom-power:active {
+    background-image:
+        linear-gradient(180deg,
+            rgba(0,   28,   90,  0.45) 0%,
+            rgba(58,  134, 240, 0.30) 100%);
+    box-shadow:
+        inset 1px 1px 0 rgba(0, 0, 0, 0.30),
+        inset -1px -1px 0 rgba(255, 255, 255, 0.40);
 }
 
-#workspaces button {
-    padding: 2px 8px;
-    margin: 3px 3px;
-    color: #ffffff;
+/* ── Bluetooth state colors ─────────────────────────────────────────── */
+#custom-bluetooth.connected { color: #DDE9FF; }
+#custom-bluetooth.on        { color: #ffffff; }
+#custom-bluetooth.off       { color: #ACA899; }
+
+/* ── Tray + clock pane — REAL Luna tray sprite ──────────────────────── */
+
+#tray,
+#clock {
+    background-image: url("file:///home/abd/.config/waybar/xp-sprites/tray-strip.png");
+    background-repeat: repeat-x;
+    background-size: 1px 100%;
     background-color: transparent;
-    transition: all 0.3s ease;
-}
-
-#workspaces button:hover {
-    background: rgba(255, 255, 255, 0.2);
-    box-shadow: none;
-}
-
-#workspaces button.focused {
-    background-color: #00A6F0;
-    border: 1px solid #FFF;
-}
-
-#workspaces button.urgent {
-    background-color: #eb4d4b;
-}
-
-/*
- * =============================================================================
- * Module-specific styling for states
- * =============================================================================
- */
-
-#network.disconnected {
-    background-color: #f53c3c;
+    padding: 0 10px;
     color: #ffffff;
+    border: 1px solid transparent;
+    transition: box-shadow 90ms linear, border-color 90ms linear;
+}
+#clock { font-weight: bold; }
+#clock:hover,
+#tray:hover {
+    box-shadow:
+        inset 1px 1px 0 rgba(255, 255, 255, 0.40),
+        inset -1px -1px 0 rgba(0, 0, 0, 0.25),
+        0 0 4px rgba(132, 184, 255, 0.45);
+    border: 1px solid rgba(10, 36, 106, 0.45);
 }
 
-#battery.charging, #battery.plugged {
-    background-color: #26A65B; /* A darker green for charging */
-    color: #ffffff;
-}
+/* ── State colors ────────────────────────────────────────────────────── */
 
-@keyframes blink {
-    to {
-        background-color: #ffffff;
-    }
-}
+#network.disconnected,
+#temperature.critical { color: #FFD8D8; }
+#battery.charging,
+#battery.plugged     { color: #D8FFD8; }
+#pulseaudio.muted    { color: #cfd8dc; }
 
+@keyframes blink { to { color: #ffffff; } }
 #battery.critical:not(.charging) {
-    background-color: #f53c3c;
-    color: #ffffff;
+    color: #FFD8D8;
     animation-name: blink;
-    animation-duration: 0.5s;
-    animation-timing-function: steps(12);
+    animation-duration: 0.6s;
+    animation-timing-function: steps(8);
     animation-iteration-count: infinite;
     animation-direction: alternate;
 }
 
-
-#pulseaudio.muted {
-    background-color: #90b1b1;
-    color: #2a5c45;
-}
-
-#temperature.critical {
-    background-color: #eb4d4b;
-}
-
-#tray {
-    background-color: #0785D2; /* Match the workspace container */
-}
+#custom-fan.idle      { color: #cfdfff; }
+#custom-fan.spinning  { color: #ffffff; }
+#custom-fan.max       { color: #94CE5C; text-shadow: 0 0 4px #94CE5C, 0 1px 0 rgba(0,0,0,0.5); }

@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<actions>
+    <action>
+        <icon>utilities-terminal</icon>
+        <name>Open Terminal Here</name>
+        <unique-id>1700000001-1</unique-id>
+        <command>wezterm start --always-new-process --cwd %f</command>
+        <description>Open a terminal in this folder</description>
+        <patterns>*</patterns>
+        <directories/>
+        <audio-files/>
+        <image-files/>
+        <other-files/>
+        <text-files/>
+        <video-files/>
+    </action>
+    <action>
+        <icon>org.kde.gwenview</icon>
+        <name>View with Gwenview</name>
+        <unique-id>1700000002-1</unique-id>
+        <command>gwenview %F</command>
+        <description>Open in Gwenview image viewer</description>
+        <patterns>*.jpg;*.jpeg;*.png;*.gif;*.bmp;*.tiff;*.tif;*.webp;*.svg;*.heif;*.heic;*.avif</patterns>
+        <image-files/>
+    </action>
+    <action>
+        <icon>edit-find</icon>
+        <name>Open with...</name>
+        <unique-id>1700000003-1</unique-id>
+        <command>thunar --open-with %f</command>
+        <description>Open with another application</description>
+        <patterns>*</patterns>
+        <audio-files/>
+        <image-files/>
+        <other-files/>
+        <text-files/>
+        <video-files/>
+    </action>
+</actions>

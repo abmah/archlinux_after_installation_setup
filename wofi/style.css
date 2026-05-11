@@ -1,99 +1,107 @@
-/* Wofi Frutiger Aero Theme - style.css */
+/*
+ * Wofi — Windows XP Luna popup-menu look.
+ * White body, vivid XP blue title bar, flat solid-blue selection,
+ * sharp 1px gray frame with white inner bevel highlight.
+ */
 
 * {
-    font-family: 'Consolas', 'Menlo', 'Monaco', monospace;
-    font-size: 14px;
+    font-family: 'Tahoma', 'Verdana', 'Liberation Sans', sans-serif;
+    font-size: 12px;
 }
 
+/* Outer window: 1px XP-gray frame around white content */
 window {
-    background-color: rgba(7, 133, 210, 0.95);
-    background-image: url("file:///home/abd/setup/images/5.jpg");
-    background-size: cover;
-    background-position: center;
-    border: 2px solid #FFFFFF;
-    border-radius: 0px;
-    padding: 0px;
+    background-color: #ECE9D8;             /* iconic XP "Bliss beige" — barely visible at edges */
+    border: 1px solid #0A246A;             /* XP window dark-blue outline */
+    border-radius: 0;
+    padding: 0;
 }
 
-/* Input box styling */
+/* The XP Luna title bar — iconic blue-jelly-bean gradient */
 #input {
-    background-color: rgba(0, 166, 240, 0.6);
+    background: linear-gradient(180deg,
+        #0058E6 0%,                         /* deep top */
+        #3A93FF 5%,                         /* bright shine band near top */
+        #0F76E6 12%,
+        #1E64DB 60%,
+        #0050D2 100%);
     color: #FFFFFF;
     border: none;
-    border-bottom: 2px solid #FFFFFF;
-    border-radius: 0px;
-    padding: 12px 15px;
-    margin: 0px;
+    border-bottom: 1px solid #0A246A;
+    border-radius: 0;
+    padding: 5px 12px;
+    margin: 0;
+    font-family: 'Trebuchet MS', 'Tahoma', 'Verdana', sans-serif;
     font-weight: bold;
-    text-transform: uppercase;
-    letter-spacing: 1px;
+    font-size: 13px;
+    text-shadow: 0 1px 1px rgba(0, 0, 0, 0.55);
+    box-shadow:
+        inset 0 1px 0 rgba(255, 255, 255, 0.45),
+        inset 0 -1px 0 rgba(0, 0, 0, 0.30);
+    letter-spacing: 0;
+    text-transform: none;
 }
 
 #input:focus {
-    background-color: rgba(0, 166, 240, 1);
+    /* identical, just makes it not feel like a different element when typing */
 }
 
-/* Main container */
-#inner-box {
-    background-color: rgba(7, 133, 210, 0.25);
-    padding: 8px;
-}
-
+/* White content area — the menu body */
 #outer-box {
-    background-color: transparent;
-    padding: 0px;
+    background: #FFFFFF;
+    padding: 0;
+    margin: 0;
 }
 
-/* Scrollbar */
+#inner-box {
+    background: #FFFFFF;
+    padding: 2px;
+    margin: 0;
+    border: none;
+}
+
 #scroll {
-    background-color: transparent;
+    background: #FFFFFF;
 }
 
-/* Entry items */
+/* Menu rows — flat white with black text, sharp corners */
 #entry {
-    background-color: transparent;
-    color: #FFFFFF;
-    padding: 10px 15px;
-    border-radius: 0px;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.2);
-    margin: 2px 0px;
+    background: #FFFFFF;
+    color: #000000;
+    padding: 5px 10px 5px 26px;            /* extra left pad like XP icon column */
+    margin: 0;
+    border: none;
+    border-radius: 0;
 }
 
-#entry:selected {
-    background-color: rgba(0, 166, 240, 0.8);
-    color: #FFFFFF;
-    font-weight: bold;
-    border-left: 3px solid #7CFC00;
-}
-
+/* Hover/select: classic XP solid blue, white text — no gradient */
+#entry:selected,
 #entry:hover {
-    background-color: rgba(0, 166, 240, 0.5);
+    background: #316AC5;                   /* the iconic XP popup-menu selection blue */
+    color: #FFFFFF;
+    border: none;
+    text-shadow: none;
+    box-shadow: none;
 }
 
-/* Text styling */
 #text {
-    color: #FFFFFF;
-    padding: 0px;
-    text-shadow: 0px 1px 2px rgba(0, 0, 0, 0.5);
+    color: inherit;
+    padding: 0;
+    text-shadow: none;
 }
 
-#entry:selected #text {
+#entry:selected #text,
+#entry:hover #text {
     color: #FFFFFF;
-    font-weight: bold;
 }
 
-/* Image icons */
+/* Icons */
 #img {
-    margin-right: 10px;
+    margin-right: 8px;
     background-color: transparent;
 }
 
-/* Expander (for additional options) */
 #expander {
-    background-color: rgba(0, 166, 240, 0.6);
-}
-
-/* No results message */
-#entry:nth-child(1) {
-    font-style: italic;
+    background: #ECE9D8;
+    color: #000000;
 }

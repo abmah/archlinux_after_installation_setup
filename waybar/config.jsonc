@@ -1,11 +1,10 @@
 {
-    "height": 30,
-    "spacing": 4,
+    "position": "bottom",
+    "height": 40,
+    "spacing": 0,
     "modules-left": [
-        "hyprland/workspaces",
-        "sway/mode",
-        "sway/scratchpad",
-        "custom/media"
+        "custom/start",
+        "hyprland/workspaces"
     ],
     "modules-center": [
         "sway/window"
@@ -16,8 +15,10 @@
         "mpd",
         "idle_inhibitor",
         "pulseaudio",
+        "custom/bluetooth",
         "network",
         "power-profiles-daemon",
+        "custom/fan",
         "cpu",
         "memory",
         "temperature",
@@ -149,7 +150,9 @@
             "",
             "",
             ""
-        ]
+        ],
+        "tooltip-format": "{capacity}% — {timeTo}\nClick: power mode menu",
+        "on-click": "$HOME/.config/waybar/power-menu.sh"
     },
     "battery#bat2": {
         "bat": "BAT2"
@@ -193,7 +196,15 @@
                 ""
             ]
         },
-        "on-click": "pavucontrol"
+        "on-click": "$HOME/.config/waybar/xp-audio.py",
+        "on-click-right": "pavucontrol"
+    },
+    "custom/bluetooth": {
+        "exec": "$HOME/.config/waybar/bluetooth.sh",
+        "interval": 3,
+        "return-type": "json",
+        "on-click": "$HOME/.config/waybar/xp-bluetooth.py",
+        "tooltip": true
     },
     "custom/media": {
         "format": "{icon} {text}",
@@ -207,21 +218,28 @@
         "exec": "$HOME/.config/waybar/mediaplayer.py 2> /dev/null"
     },
     "custom/power": {
-        "format": "⏻ ",
-        "tooltip": false,
-        "menu": "on-click",
-        "menu-file": "$HOME/.config/waybar/power_menu.xml",
-        "menu-actions": {
-            "shutdown": "shutdown",
-            "reboot": "reboot",
-            "suspend": "systemctl suspend",
-            "hibernate": "systemctl hibernate"
-        }
+        "format": "⏻",
+        "tooltip": true,
+        "tooltip-format": "Shutdown menu",
+        "on-click": "$HOME/.config/waybar/shutdown-menu.sh"
+    },
+    "custom/fan": {
+        "exec": "$HOME/.config/waybar/fan.sh",
+        "interval": 1,
+        "return-type": "json",
+        "on-click": "$HOME/.config/waybar/fan-menu.sh",
+        "tooltip": true
+    },
+    "custom/start": {
+        "format": "  start",
+        "tooltip": true,
+        "tooltip-format": "Start menu",
+        "on-click": "$HOME/.config/waybar/xp-start.py"
     },
     "custom/nmtui": {
         "format": "󰛳",
         "tooltip": true,
         "tooltip-format": "Network Manager",
-        "on-click": "kitty -e nmtui"
+        "on-click": "wezterm start --always-new-process -- nmtui"
     }
 }
