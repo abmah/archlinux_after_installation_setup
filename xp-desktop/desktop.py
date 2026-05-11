@@ -221,10 +221,24 @@ def pixbuf_for(icon_name, size=ICON_PX):
 def open_path(path):
     """Open a file/folder/.desktop the right way."""
     if path.endswith(".desktop") and os.path.isfile(path):
-        # Use gtk-launch which respects the desktop entry semantics
+        info = parse_desktop_file(path)
+        exec_line = info.get("Exec", "")
+        if exec_line:
+            # Strip .desktop %f/%F/%u/%U field codes
+            import re as _re
+            cmd = _re.sub(r"\s*%[fFuUdDnNickvm]\s*", " ", exec_line).strip()
+            if info.get("Terminal"):
+                cmd = f"wezterm start -- bash -lc {GLib.shell_quote(cmd)}"
+            try:
+                subprocess.Popen(["sh", "-c", cmd], start_new_session=True,
+                                 stdout=subprocess.DEVNULL,
+                                 stderr=subprocess.DEVNULL,
+                                 stdin=subprocess.DEVNULL)
+                return
+            except Exception as e:
+                print(f"[xp-desktop] exec {cmd!r}: {e}", file=sys.stderr)
+        # Fallback to gtk-launch by app id
         name = os.path.basename(path)[:-len(".desktop")]
-        # Make sure the app dir is discoverable
-        env = os.environ.copy()
         run_detached(["gtk-launch", name])
         return
     if os.path.isdir(path):
