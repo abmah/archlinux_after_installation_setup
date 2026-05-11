@@ -170,9 +170,26 @@ label.xp-hint { font-family: "Tahoma"; font-size: 8pt; color: #555555; }
     color: #000000;
 }
 .xp-btn:active label { color: #000000; }
-.xp-btn:disabled { color: #3A3A3A; }
-.xp-btn:disabled label { color: #3A3A3A; }
-.xp-btn-default { border: 2px solid #0A246A; padding: 2px 13px; }
+/* All buttons render identically -- no "default action" heavy border, no
+   muted variant. Click validity is decided inside the handlers (the
+   _xp_enabled flag), so every button has the same XP-Luna look. */
+.xp-btn.xp-mute,
+.xp-btn-default {
+    background-image: linear-gradient(180deg, #FFFFFF 0%, #ECE9D8 45%, #D8D2BD 100%);
+    border: 1px solid #003C74;
+    padding: 3px 14px;
+}
+/* Suppress GTK's auto-focused/default-action decoration */
+.xp-btn:focus,
+.xp-btn:focus-visible,
+.xp-btn.default,
+.xp-btn.suggested-action {
+    border: 1px solid #003C74;
+    outline: none;
+    box-shadow:
+        inset 1px 1px 0 rgba(255,255,255,0.9),
+        inset -1px -1px 0 rgba(112,112,96,0.55);
+}
 
 .xp-buttons { background-color: #ECE9D8; padding: 8px 6px 6px 6px; }
 
@@ -283,16 +300,15 @@ def icon_for(dev):
 # Dialog
 # ===========================================================================
 
-def _btn_markup(text, enabled=True):
-    color = "#000000" if enabled else "#3A3A3A"
-    return (f'<span foreground="{color}" font_desc="Tahoma 9">'
+def _btn_markup(text):
+    # Always render label in solid black via Pango markup. GTK dims the entire
+    # widget if you call set_sensitive(False), so we never go insensitive --
+    # instead we toggle an .xp-mute class for visual cue and gate handlers.
+    return (f'<span foreground="#000000" font_desc="Tahoma 9">'
             f'{GLib.markup_escape_text(text)}</span>')
 
 
 def make_btn(text, classes=("xp-btn",)):
-    """Build a Gtk.Button whose label has hard-coded black markup so no
-    theme/CSS cascade can re-color it. Manages an enabled/disabled-aware
-    markup that GTK can't override via its :disabled selector."""
     btn = Gtk.Button()
     lbl = Gtk.Label()
     lbl.show()
@@ -302,18 +318,24 @@ def make_btn(text, classes=("xp-btn",)):
         ctx.add_class(c)
     btn._xp_label = lbl
     btn._xp_text  = text
-    lbl.set_markup(_btn_markup(text, enabled=True))
-
-    def _on_state(_b, _flags):
-        en = btn.get_sensitive()
-        lbl.set_markup(_btn_markup(btn._xp_text, enabled=en))
-    btn.connect("state-flags-changed", _on_state)
+    btn._xp_enabled = True
+    lbl.set_markup(_btn_markup(text))
     return btn
 
 
 def set_btn_text(btn, text):
     btn._xp_text = text
-    btn._xp_label.set_markup(_btn_markup(text, enabled=btn.get_sensitive()))
+    btn._xp_label.set_markup(_btn_markup(text))
+
+
+def set_btn_enabled(btn, enabled):
+    """Visual-only enable/disable. Real gating happens in the click handler."""
+    btn._xp_enabled = enabled
+    ctx = btn.get_style_context()
+    if enabled:
+        ctx.remove_class("xp-mute")
+    else:
+        ctx.add_class("xp-mute")
 
 
 class BluetoothDialog(Gtk.Window):
@@ -530,10 +552,10 @@ class BluetoothDialog(Gtk.Window):
         row = self.listbox.get_selected_row()
         has = row is not None
         dev = getattr(row, "dev", None) if has else None
-        self.btn_connect.set_sensitive(has and dev and not dev["connected"])
-        self.btn_disconnect.set_sensitive(has and dev and dev["connected"])
-        self.btn_pair.set_sensitive(has and dev and not dev["paired"])
-        self.btn_remove.set_sensitive(has and dev and dev["paired"])
+        set_btn_enabled(self.btn_connect,    bool(has and dev and not dev["connected"]))
+        set_btn_enabled(self.btn_disconnect, bool(has and dev and     dev["connected"]))
+        set_btn_enabled(self.btn_pair,       bool(has and dev and not dev["paired"]))
+        set_btn_enabled(self.btn_remove,     bool(has and dev and     dev["paired"]))
 
     # ---- Actions ----------------------------------------------------------
 
@@ -550,6 +572,7 @@ class BluetoothDialog(Gtk.Window):
         threading.Thread(target=worker, daemon=True).start()
 
     def _on_connect(self, *_):
+        if not self.btn_connect._xp_enabled: return
         d = self._selected()
         if d:
             if not d["paired"]:
@@ -562,12 +585,14 @@ class BluetoothDialog(Gtk.Window):
                                 lambda: bt("connect", d["mac"], timeout=15))
 
     def _on_disconnect(self, *_):
+        if not self.btn_disconnect._xp_enabled: return
         d = self._selected()
         if d:
             self._run_async("Disconnecting",
                             lambda: bt("disconnect", d["mac"], timeout=10))
 
     def _on_pair(self, *_):
+        if not self.btn_pair._xp_enabled: return
         d = self._selected()
         if d:
             self._run_async("Pairing",
@@ -575,6 +600,7 @@ class BluetoothDialog(Gtk.Window):
                                      bt("pair", d["mac"], timeout=20)))
 
     def _on_remove(self, *_):
+        if not self.btn_remove._xp_enabled: return
         d = self._selected()
         if d:
             self._run_async("Removing",
