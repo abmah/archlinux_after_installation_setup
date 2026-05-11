@@ -44,6 +44,13 @@ if [ -d ~/.config/Thunar ]; then
     cp -r ~/.config/Thunar/* "$BACKUP_DIR/Thunar/" 2>/dev/null || true
 fi
 
+# Copy xfce4 xfconf settings (thunar-volman etc.)
+if [ -d ~/.config/xfce4 ]; then
+    echo "Copying xfce4 settings..."
+    mkdir -p "$BACKUP_DIR/xfce4"
+    cp -r ~/.config/xfce4/* "$BACKUP_DIR/xfce4/" 2>/dev/null || true
+fi
+
 # Copy Dunst config (XP-themed notifications)
 if [ -d ~/.config/dunst ]; then
     echo "Copying Dunst config..."

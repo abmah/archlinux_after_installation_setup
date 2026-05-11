@@ -71,7 +71,10 @@ PKGS_HYPR=(
 # Terminal, file manager, browser-ish things
 PKGS_DESKTOP=(
     wezterm
-    thunar tumbler gvfs ffmpegthumbnailer
+    thunar thunar-volman tumbler ffmpegthumbnailer
+    gvfs gvfs-mtp gvfs-gphoto2
+    udisks2 polkit-gnome
+    ntfs-3g exfatprogs
     gwenview
     pavucontrol
     brightnessctl
@@ -194,11 +197,14 @@ step_packages() {
 }
 
 step_services() {
-    step "services: bluetooth, keyd, pipewire-pulse, NetworkManager"
+    step "services: bluetooth, keyd, pipewire-pulse, NetworkManager, udisks2"
     run "sudo systemctl enable --now bluetooth.service"
     run "sudo systemctl enable --now keyd.service || true"
     run "sudo systemctl enable --now NetworkManager.service || true"
+    run "sudo systemctl enable --now udisks2.service"
     run "systemctl --user enable --now pipewire-pulse.service || true"
+    # storage group: lets the user mount removable drives without root
+    run "sudo gpasswd -a '$TARGET_USER' storage 2>/dev/null || true"
 }
 
 # /etc/keyd/default.conf - rightalt → leftmeta (Win key on the laptop)
@@ -246,6 +252,7 @@ step_configs() {
     deploy_config_tree wofi     wofi
     deploy_config_tree dunst    dunst
     deploy_config_tree Thunar   Thunar
+    deploy_config_tree xfce4    xfce4
     deploy_config_tree gtk-3.0     gtk-3.0
     deploy_config_tree kitty       kitty
     deploy_config_tree xp-desktop  xp-desktop
