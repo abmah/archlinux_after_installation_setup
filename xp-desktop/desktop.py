@@ -59,16 +59,17 @@ window.xp-desktop { background-color: rgba(0,0,0,0); }
    font + transparent background. */
 .xp-icon-label { background-color: transparent; }
 
-/* Selection rectangle around a picked icon (XP "marquee" look) */
+/* Cell wraps the icon + label, gets the selection rectangle + focus ring */
 .xp-icon-cell {
     background-color: transparent;
-    border-radius: 3px;
-    padding: 2px;
     border: 1px dotted transparent;
+    padding: 2px;
 }
 .xp-icon-cell.selected {
+    /* XP-blue translucent fill, exactly like XP "selected" item */
     background-color: rgba(49, 106, 197, 0.40);
-    border: 1px dotted #FFFFFF;
+    /* Classic XP focus ring: 1px dotted dark-gray "marching ants" */
+    border: 1px dotted #1A1A1A;
 }
 
 /* ----- Context menu --------------------------------------------------- */
@@ -367,16 +368,21 @@ class XPIcon(Gtk.EventBox):
         # icon pixbuf
         self.img.set_from_pixbuf(pixbuf_for(icon_name_for(self.path)))
 
-    def _set_label_markup(self, text):
-        # White text with a chunky black halo - XP-style readable-over-any-bg
-        # Pango doesn't do real text-shadow, so we approximate by stacking the
-        # same string twice: a slightly larger black version drawn under is
-        # cheap but adds DOM complexity. Easier path: use a strong outline via
-        # 'background' tag for a 1px halo. Real XP just uses solid black bg.
+    def _set_label_markup(self, text, selected=False):
+        """Match real XP icon labels:
+          unselected -> white Tahoma text over a translucent black tile
+                        (readable on any wallpaper)
+          selected   -> white Tahoma text over a SOLID XP-blue tile,
+                        exactly like Windows XP's icon-selection paint."""
         safe = GLib.markup_escape_text(text)
-        self.label.set_markup(
-            f'<span font_desc="Tahoma 9" foreground="#FFFFFF" '
-            f'background="#00000080">  {safe}  </span>')
+        if selected:
+            self.label.set_markup(
+                f'<span font_desc="Tahoma 9" foreground="#FFFFFF" '
+                f'background="#316AC5">  {safe}  </span>')
+        else:
+            self.label.set_markup(
+                f'<span font_desc="Tahoma 9" foreground="#FFFFFF" '
+                f'background="#00000080">  {safe}  </span>')
 
     def set_selected(self, sel):
         if sel == self.selected:
@@ -387,6 +393,13 @@ class XPIcon(Gtk.EventBox):
             ctx.add_class("selected")
         else:
             ctx.remove_class("selected")
+        # Re-render label tile so it matches selection state
+        name = os.path.basename(self.path)
+        if name.endswith(".desktop"):
+            info = parse_desktop_file(self.path)
+            if info.get("Name"):
+                name = info["Name"]
+        self._set_label_markup(name, selected=sel)
 
     # ---- input -----------------------------------------------------------
 
@@ -547,7 +560,11 @@ class XPDesktop(Gtk.Window):
 
         # Make this a Wayland layer-shell BACKGROUND surface that fills the screen.
         GtkLayerShell.init_for_window(self)
-        GtkLayerShell.set_layer(self, GtkLayerShell.Layer.BACKGROUND)
+        # BOTTOM (not BACKGROUND): sits *above* hyprpaper's wallpaper layer
+        # but still below every normal application window. Using BACKGROUND
+        # caused hyprpaper to clobber us when it re-attached its surface
+        # (e.g. on wallpaper change).
+        GtkLayerShell.set_layer(self, GtkLayerShell.Layer.BOTTOM)
         GtkLayerShell.set_namespace(self, "xp-desktop")
         for edge in (GtkLayerShell.Edge.TOP, GtkLayerShell.Edge.BOTTOM,
                      GtkLayerShell.Edge.LEFT, GtkLayerShell.Edge.RIGHT):
