@@ -259,33 +259,60 @@ def pixbuf_for(icon_name, size=ICON_PX):
     return GdkPixbuf.Pixbuf.new(GdkPixbuf.Colorspace.RGB, True, 8, size, size)
 
 
-def open_path(path):
-    """Open a file/folder/.desktop the right way."""
+# XP-style "windowed by default" rule: float, 75% screen, centered.
+# Applied per-spawn via hyprctl dispatch exec [rules] cmd.
+WINDOWED_RULE = "[float; size 75% 75%; center]"
+
+
+def _hypr_exec(cmd, windowed=True):
+    """Spawn a shell command, optionally with a Hyprland per-spawn rule that
+    makes the first window from it float in the centre at 75% (XP feel)."""
+    if windowed and shutil.which("hyprctl"):
+        # hyprctl dispatch exec accepts a single string arg "[rules] cmd"
+        full = f"{WINDOWED_RULE} {cmd}"
+        try:
+            subprocess.Popen(["hyprctl", "dispatch", "exec", full],
+                             start_new_session=True,
+                             stdout=subprocess.DEVNULL,
+                             stderr=subprocess.DEVNULL,
+                             stdin=subprocess.DEVNULL)
+            return
+        except Exception as e:
+            print(f"[xp-desktop] hyprctl exec failed ({e}); falling back",
+                  file=sys.stderr)
+    # Plain spawn (non-Hyprland fallback, or windowed=False)
+    try:
+        subprocess.Popen(["sh", "-c", cmd], start_new_session=True,
+                         stdout=subprocess.DEVNULL,
+                         stderr=subprocess.DEVNULL,
+                         stdin=subprocess.DEVNULL)
+    except Exception as e:
+        print(f"[xp-desktop] exec {cmd!r}: {e}", file=sys.stderr)
+
+
+def open_path(path, windowed=True):
+    """Open a file/folder/.desktop the right way.
+    windowed=True (default): launch with Hyprland float-centered rule,
+    so the first window opens in a centered ~75% box - real XP feel.
+    Pass windowed=False for 'Open Tiled' (right-click menu)."""
     if path.endswith(".desktop") and os.path.isfile(path):
         info = parse_desktop_file(path)
         exec_line = info.get("Exec", "")
         if exec_line:
-            # Strip .desktop %f/%F/%u/%U field codes
             import re as _re
             cmd = _re.sub(r"\s*%[fFuUdDnNickvm]\s*", " ", exec_line).strip()
             if info.get("Terminal"):
                 cmd = f"wezterm start -- bash -lc {GLib.shell_quote(cmd)}"
-            try:
-                subprocess.Popen(["sh", "-c", cmd], start_new_session=True,
-                                 stdout=subprocess.DEVNULL,
-                                 stderr=subprocess.DEVNULL,
-                                 stdin=subprocess.DEVNULL)
-                return
-            except Exception as e:
-                print(f"[xp-desktop] exec {cmd!r}: {e}", file=sys.stderr)
-        # Fallback to gtk-launch by app id
+            _hypr_exec(cmd, windowed=windowed)
+            return
+        # Fallback to gtk-launch by app id (rare path)
         name = os.path.basename(path)[:-len(".desktop")]
         run_detached(["gtk-launch", name])
         return
     if os.path.isdir(path):
-        run_detached(["thunar", path])
+        _hypr_exec(f"thunar {GLib.shell_quote(path)}", windowed=windowed)
         return
-    run_detached(["xdg-open", path])
+    _hypr_exec(f"xdg-open {GLib.shell_quote(path)}", windowed=windowed)
 
 
 def trash_path(path):
@@ -580,6 +607,9 @@ class XPIcon(Gtk.EventBox):
         is_dir = os.path.isdir(self.path)
         m.add_item("Open", self.activate, bold=True,
                    icon="folder-open" if is_dir else "document-open")
+        m.add_item("Open Tiled",
+                   lambda: open_path(self.path, windowed=False),
+                   icon="view-grid")
         if is_dir:
             m.add_item("Explore", self.activate, icon="folder")
             m.add_item("Search...",
